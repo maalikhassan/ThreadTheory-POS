@@ -7,7 +7,10 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Main container for the entire app -->
     <div class="app-container">
+        
+        <!-- Left sidebar navigation -->
         <aside class="sidebar">
             <div class="logo">
                 <span class="logo-icon">/T/</span>
@@ -23,9 +26,11 @@
             </nav>
         </aside>
 
+        <!-- Main product display area -->
         <main class="product-view">
             <header class="view-header">
                 <h1>Clothing Collection</h1>
+                <!-- Category filter buttons -->
                 <div class="categories">
                     <button class="category-btn active" onclick="displayProducts('All')">All</button>
                     <button class="category-btn" onclick="displayProducts('Shirts')">Shirts</button>
@@ -33,23 +38,37 @@
                     <button class="category-btn" onclick="displayProducts('Accessories')">Accessories</button>
                 </div>
             </header>
+            
+            <!-- Grid where product cards appear -->
             <section class="product-grid" id="productGrid">
-                </section>
+                <!-- Products will be added here by JavaScript -->
+            </section>
         </main>
 
+        <!-- Right sidebar - shopping cart -->
         <aside class="cart-panel">
             <h3>Current Order</h3>
+            
+            <!-- Cart items list -->
             <div class="cart-items" id="cartItems">
-                </div>
+                <!-- Cart items will be added here by JavaScript -->
+            </div>
+            
+            <!-- Order summary with totals -->
             <div class="cart-summary">
                 <p>Subtotal: <span id="subtotal">$0.00</span></p>
-                <p>Discount: <input type="number" id="discountInput" placeholder="0%"> </p>
+                <p>Discount: <input type="number" id="discountInput" placeholder="0%" min="0" max="100"> %</p>
                 <hr>
                 <h4>Total: <span id="finalTotal">$0.00</span></h4>
-                <button class="btn-checkout">Place Order</button>
+                
+                <!-- Action buttons -->
+                <button class="btn-checkout" onclick="placeOrder()">Place Order</button>
+                <button class="btn-clear" onclick="clearCart()">Clear Cart</button>
             </div>
         </aside>
     </div>
+    
+    <!-- Load JavaScript file -->
     <script src="app.js"></script>
 </body>
 </html>

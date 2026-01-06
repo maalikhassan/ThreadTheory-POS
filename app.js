@@ -1,82 +1,234 @@
-// 1. Mock Data: This replaces a database for now
-const products = [
+// ===========================================
+// DATA STORAGE (Replaces a real database)
+// ===========================================
+
+// Products array - stores all items we can sell
+let products = [
     { id: 1, name: "Classic White Shirt", price: 25.00, category: "Shirts", image: "https://via.placeholder.com/150" },
     { id: 2, name: "Slim Fit Jeans", price: 40.00, category: "Pants", image: "https://via.placeholder.com/150" },
     { id: 3, name: "Leather Belt", price: 15.00, category: "Accessories", image: "https://via.placeholder.com/150" },
     { id: 4, name: "Graphic Tee", price: 20.00, category: "Shirts", image: "https://via.placeholder.com/150" }
 ];
 
-// 2. State Management: Keeping track of what's in the cart
+// Customers array - stores customer information
+let customers = [
+    { id: 1, name: "John Smith", phone: "555-0101", email: "john@example.com" },
+    { id: 2, name: "Sarah Johnson", phone: "555-0102", email: "sarah@example.com" }
+];
+
+// Orders array - stores completed orders
+let orders = [];
+
+// Current cart - stores items being added to current order
 let cart = [];
 
-// 3. Select DOM Elements
+// Current customer for this order
+let currentCustomer = null;
+
+// Counter for generating new IDs
+let nextProductId = 5;
+let nextCustomerId = 3;
+let nextOrderId = 1;
+
+// ===========================================
+// DOM ELEMENT REFERENCES
+// ===========================================
+
+// Store references to HTML elements we'll manipulate
 const productGrid = document.getElementById('productGrid');
 const cartItemsContainer = document.getElementById('cartItems');
 const discountInput = document.getElementById('discountInput');
 
-// 4. Add event listener for discount input
-discountInput.addEventListener('input', renderCart);
+// ===========================================
+// INITIALIZATION
+// ===========================================
 
-// 4. Function to display products
-function displayProducts(filter = "All") {
-    productGrid.innerHTML = ""; // Clear current display
+// This function runs when the page loads
+function initializeApp() {
+    // Display all products on screen
+    displayProducts("All");
+    
+    // Set up the discount input to recalculate when changed
+    discountInput.addEventListener('input', updateCartDisplay);
+}
 
-    products.forEach(product => {
-        // Filter logic
-        if (filter === "All" || product.category === filter) {
-            const card = document.createElement('div');
+// ===========================================
+// PRODUCT FUNCTIONS (CRUD Operations)
+// ===========================================
+
+// READ: Display products on the screen with optional category filter
+function displayProducts(filterCategory) {
+    // Clear the product grid first
+    productGrid.innerHTML = "";
+    
+    // Loop through each product in our products array
+    for (let i = 0; i < products.length; i++) {
+        let product = products[i];
+        
+        // Check if product matches the filter
+        let shouldDisplay = false;
+        if (filterCategory === "All") {
+            shouldDisplay = true;
+        } else if (product.category === filterCategory) {
+            shouldDisplay = true;
+        }
+        
+        // If product matches filter, create a card for it
+        if (shouldDisplay) {
+            // Create a new div element for the product card
+            let card = document.createElement('div');
             card.className = 'product-card';
+            
+            // Set the HTML content of the card
             card.innerHTML = `
                 <img src="${product.image}" alt="${product.name}">
                 <h4>${product.name}</h4>
-                <p>$${product.price.toFixed(2)}</p>
-                <button onclick="addToCart(${product.id})">Add to Order</button>
+                <p class="price">$${product.price.toFixed(2)}</p>
+                <p class="category">${product.category}</p>
+                <button onclick="addItemToCart(${product.id})">Add to Order</button>
             `;
+            
+            // Add the card to the product grid
             productGrid.appendChild(card);
         }
-    });
+    }
 }
 
-// 5. Add to Cart Function
-function addToCart(productId) {
-    const product = products.find(p => p.id === productId);
-    cart.push(product);
-    renderCart();
+// ===========================================
+// CART FUNCTIONS
+// ===========================================
+
+// CREATE: Add a product to the current cart
+function addItemToCart(productId) {
+    // Loop through products to find the one with matching ID
+    let foundProduct = null;
+    for (let i = 0; i < products.length; i++) {
+        if (products[i].id === productId) {
+            foundProduct = products[i];
+            break;
+        }
+    }
+    
+    // If product found, add it to cart
+    if (foundProduct !== null) {
+        cart.push(foundProduct);
+        updateCartDisplay();
+    }
 }
 
-// 6. Function to update the Cart UI
-function renderCart() {
+// DELETE: Remove an item from cart by its position
+function removeItemFromCart(cartIndex) {
+    // Remove one item at the specified index
+    cart.splice(cartIndex, 1);
+    
+    // Update the cart display
+    updateCartDisplay();
+}
+
+// READ: Update the cart display and calculate totals
+function updateCartDisplay() {
+    // Clear current cart display
     cartItemsContainer.innerHTML = "";
+    
+    // Variable to track subtotal
     let subtotal = 0;
     
-    cart.forEach((item, index) => {
-        const div = document.createElement('div');
-        div.className = 'cart-item';
-        div.innerHTML = `
+    // Loop through each item in cart
+    for (let i = 0; i < cart.length; i++) {
+        let item = cart[i];
+        
+        // Create a div for this cart item
+        let itemDiv = document.createElement('div');
+        itemDiv.className = 'cart-item';
+        
+        // Set the HTML for this item
+        itemDiv.innerHTML = `
             <span>${item.name}</span>
             <span>$${item.price.toFixed(2)}</span>
-            <button onclick="removeFromCart(${index})">X</button>
+            <button onclick="removeItemFromCart(${i})">X</button>
         `;
-        cartItemsContainer.appendChild(div);
-        subtotal += item.price;
-    });
+        
+        // Add the item to cart container
+        cartItemsContainer.appendChild(itemDiv);
+        
+        // Add this item's price to subtotal
+        subtotal = subtotal + item.price;
+    }
     
-    // Update subtotal
-    document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
+    // Update subtotal display
+    let subtotalElement = document.getElementById('subtotal');
+    subtotalElement.textContent = "$" + subtotal.toFixed(2);
     
-    // Calculate discount and final total
-    const discountPercent = parseFloat(document.getElementById('discountInput').value) || 0;
-    const discountAmount = (subtotal * discountPercent) / 100;
-    const finalTotal = subtotal - discountAmount;
+    // Get discount percentage from input
+    let discountPercent = parseFloat(discountInput.value);
+    if (isNaN(discountPercent)) {
+        discountPercent = 0;
+    }
     
-    document.getElementById('finalTotal').textContent = `$${finalTotal.toFixed(2)}`;
+    // Calculate discount amount
+    let discountAmount = (subtotal * discountPercent) / 100;
+    
+    // Calculate final total
+    let finalTotal = subtotal - discountAmount;
+    
+    // Update final total display
+    let totalElement = document.getElementById('finalTotal');
+    totalElement.textContent = "$" + finalTotal.toFixed(2);
 }
 
-// 7. Remove from Cart Function
-function removeFromCart(index) {
-    cart.splice(index, 1); // Remove item at the given index
-    renderCart(); // Update the cart display
+// DELETE: Clear the entire cart
+function clearCart() {
+    cart = [];
+    updateCartDisplay();
 }
 
-// Initialize the display
-displayProducts();
+// CREATE: Place the current order
+function placeOrder() {
+    // Check if cart has items
+    if (cart.length === 0) {
+        alert("Cart is empty! Add items first.");
+        return;
+    }
+    
+    // Calculate order total
+    let orderTotal = 0;
+    for (let i = 0; i < cart.length; i++) {
+        orderTotal = orderTotal + cart[i].price;
+    }
+    
+    // Apply discount if any
+    let discountPercent = parseFloat(discountInput.value);
+    if (isNaN(discountPercent)) {
+        discountPercent = 0;
+    }
+    let discountAmount = (orderTotal * discountPercent) / 100;
+    orderTotal = orderTotal - discountAmount;
+    
+    // Create new order object
+    let newOrder = {
+        id: nextOrderId,
+        items: cart.slice(), // Copy of cart items
+        total: orderTotal,
+        discount: discountPercent,
+        customer: currentCustomer,
+        date: new Date().toLocaleDateString()
+    };
+    
+    // Add order to orders array
+    orders.push(newOrder);
+    nextOrderId = nextOrderId + 1;
+    
+    // Clear the cart
+    clearCart();
+    discountInput.value = "";
+    
+    // Show success message
+    alert("Order placed successfully! Order #" + newOrder.id);
+}
+
+// ===========================================
+// START THE APPLICATION
+// ===========================================
+
+// Run initialization when page loads
+initializeApp();
