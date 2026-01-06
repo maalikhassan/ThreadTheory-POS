@@ -34,13 +34,13 @@ let nextOrderId = 1;
 // ===========================================
 
 // Store references to HTML elements we'll manipulate
-const productGrid = document.getElementById('productGrid');
-const cartItemsContainer = document.getElementById('cartItems');
-const discountInput = document.getElementById('discountInput');
-const customerSection = document.getElementById('customer-section');
-const customerNameInput = document.getElementById('customerName');
-const customerEmailInput = document.getElementById('customerEmail');
-const customerTableBody = document.getElementById('customerTableBody');
+let productGrid;
+let cartItemsContainer;
+let discountInput;
+let customerSection;
+let customerNameInput;
+let customerEmailInput;
+let customerTableBody;
 
 // ===========================================
 // INITIALIZATION
@@ -48,11 +48,20 @@ const customerTableBody = document.getElementById('customerTableBody');
 
 // This function runs when the page loads
 function initializeApp() {
+    // Get all DOM element references first
+    productGrid = document.getElementById('productGrid');
+    cartItemsContainer = document.getElementById('cartItems');
+    discountInput = document.getElementById('discountInput');
+    customerSection = document.getElementById('customer-section');
+    customerNameInput = document.getElementById('customerName');
+    customerEmailInput = document.getElementById('customerEmail');
+    customerTableBody = document.getElementById('customerTableBody');
+    
     // Display all products on screen
+    displayProducts("All");
     
     // Display existing customers in table
     renderCustomerTable();
-    displayProducts("All");
     
     // Set up the discount input to recalculate when changed
     discountInput.addEventListener('input', updateCartDisplay);
@@ -226,7 +235,14 @@ function placeOrder() {
     
     // Clear the cart
     clearCart();
-   VIEW SWITCHING FUNCTIONS
+    discountInput.value = "";
+    
+    // Show success message
+    alert("Order placed successfully! Order #" + newOrder.id);
+}
+
+// ===========================================
+// VIEW SWITCHING FUNCTIONS
 // ===========================================
 
 // Show the store/products view and hide customer section
@@ -336,13 +352,6 @@ function renderCustomerTable() {
         // Add the row to the table body
         customerTableBody.appendChild(row);
     }
-}
-
-// ===========================================
-//  discountInput.value = "";
-    
-    // Show success message
-    alert("Order placed successfully! Order #" + newOrder.id);
 }
 
 // ===========================================
