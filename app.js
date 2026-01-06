@@ -12,8 +12,7 @@ let products = [
 
 // Customers array - stores customer information
 let customers = [
-    { id: 1, name: "John Smith", phone: "555-0101", email: "john@example.com" },
-    { id: 2, name: "Sarah Johnson", phone: "555-0102", email: "sarah@example.com" }
+    { id: "C001", name: "Guest Customer", email: "guest@threadtheory.com" }
 ];
 
 // Orders array - stores completed orders
@@ -27,7 +26,7 @@ let currentCustomer = null;
 
 // Counter for generating new IDs
 let nextProductId = 5;
-let nextCustomerId = 3;
+let nextCustomerId = 2; // Start from 2 since we have C001
 let nextOrderId = 1;
 
 // ===========================================
@@ -38,6 +37,10 @@ let nextOrderId = 1;
 const productGrid = document.getElementById('productGrid');
 const cartItemsContainer = document.getElementById('cartItems');
 const discountInput = document.getElementById('discountInput');
+const customerSection = document.getElementById('customer-section');
+const customerNameInput = document.getElementById('customerName');
+const customerEmailInput = document.getElementById('customerEmail');
+const customerTableBody = document.getElementById('customerTableBody');
 
 // ===========================================
 // INITIALIZATION
@@ -46,6 +49,9 @@ const discountInput = document.getElementById('discountInput');
 // This function runs when the page loads
 function initializeApp() {
     // Display all products on screen
+    
+    // Display existing customers in table
+    renderCustomerTable();
     displayProducts("All");
     
     // Set up the discount input to recalculate when changed
@@ -220,7 +226,120 @@ function placeOrder() {
     
     // Clear the cart
     clearCart();
-    discountInput.value = "";
+   VIEW SWITCHING FUNCTIONS
+// ===========================================
+
+// Show the store/products view and hide customer section
+function showStoreView() {
+    // Show the product grid
+    productGrid.style.display = "grid";
+    
+    // Hide the customer section
+    customerSection.style.display = "none";
+    
+    // Update sidebar active state
+    updateSidebarActive(0);
+}
+
+// Show the customer management view and hide product grid
+function showCustomerView() {
+    // Hide the product grid
+    productGrid.style.display = "none";
+    
+    // Show the customer section
+    customerSection.style.display = "block";
+    
+    // Update sidebar active state
+    updateSidebarActive(2);
+    
+    // Refresh customer table display
+    renderCustomerTable();
+}
+
+// Update which sidebar menu item is highlighted
+function updateSidebarActive(index) {
+    // Get all sidebar menu items
+    let menuItems = document.querySelectorAll('.sidebar nav li');
+    
+    // Loop through each menu item
+    for (let i = 0; i < menuItems.length; i++) {
+        // Remove active class from all items
+        menuItems[i].classList.remove('active');
+    }
+    
+    // Add active class to the selected item
+    if (menuItems[index]) {
+        menuItems[index].classList.add('active');
+    }
+}
+
+// ===========================================
+// CUSTOMER MANAGEMENT FUNCTIONS (CRUD)
+// ===========================================
+
+// CREATE: Save a new customer to the customers array
+function saveCustomer() {
+    // Get the values from input fields
+    let customerName = customerNameInput.value;
+    let customerEmail = customerEmailInput.value;
+    
+    // Check if inputs are empty
+    if (customerName === "" || customerEmail === "") {
+        alert("Please enter both name and email!");
+        return;
+    }
+    
+    // Generate new customer ID (format: C001, C002, C003...)
+    let newId = "C" + String(nextCustomerId).padStart(3, "0");
+    nextCustomerId = nextCustomerId + 1;
+    
+    // Create new customer object
+    let newCustomer = {
+        id: newId,
+        name: customerName,
+        email: customerEmail
+    };
+    
+    // Add customer to customers array
+    customers.push(newCustomer);
+    
+    // Clear the input fields
+    customerNameInput.value = "";
+    customerEmailInput.value = "";
+    
+    // Update the customer table display
+    renderCustomerTable();
+    
+    // Show success message
+    alert("Customer saved successfully! ID: " + newId);
+}
+
+// READ: Display all customers in the table
+function renderCustomerTable() {
+    // Clear the current table content
+    customerTableBody.innerHTML = "";
+    
+    // Loop through each customer in the customers array
+    for (let i = 0; i < customers.length; i++) {
+        let customer = customers[i];
+        
+        // Create a new table row
+        let row = document.createElement('tr');
+        
+        // Set the HTML content for this row
+        row.innerHTML = `
+            <td>${customer.id}</td>
+            <td>${customer.name}</td>
+            <td>${customer.email}</td>
+        `;
+        
+        // Add the row to the table body
+        customerTableBody.appendChild(row);
+    }
+}
+
+// ===========================================
+//  discountInput.value = "";
     
     // Show success message
     alert("Order placed successfully! Order #" + newOrder.id);

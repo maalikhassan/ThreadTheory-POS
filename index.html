@@ -18,9 +18,9 @@
             </div>
             <nav>
                 <ul>
-                    <li class="active">Store</li>
+                    <li class="active" onclick="showStoreView()">Store</li>
                     <li>Products</li>
-                    <li>Customers</li>
+                    <li onclick="showCustomerView()">Customers</li>
                     <li>Orders</li>
                 </ul>
             </nav>
@@ -42,6 +42,42 @@
             <!-- Grid where product cards appear -->
             <section class="product-grid" id="productGrid">
                 <!-- Products will be added here by JavaScript -->
+            </section>
+
+            <!-- Customer Management Section (hidden by default) -->
+            <section class="customer-section" id="customer-section">
+                <h2>Customer Management</h2>
+                
+                <!-- Customer Input Form -->
+                <div class="customer-form">
+                    <h3>Add New Customer</h3>
+                    <div class="form-group">
+                        <label>Customer Name:</label>
+                        <input type="text" id="customerName" placeholder="Enter customer name">
+                    </div>
+                    <div class="form-group">
+                        <label>Email:</label>
+                        <input type="email" id="customerEmail" placeholder="Enter customer email">
+                    </div>
+                    <button class="btn-save" onclick="saveCustomer()">Save Customer</button>
+                </div>
+
+                <!-- Customer List Table -->
+                <div class="customer-list">
+                    <h3>Customer List</h3>
+                    <table class="customer-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                            </tr>
+                        </thead>
+                        <tbody id="customerTableBody">
+                            <!-- Customer rows will be added here by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
             </section>
         </main>
 
