@@ -16,8 +16,8 @@
             <nav>
                 <ul>
                     <li class="active">Store</li>
-                    <li>Products (CRUD)</li>
-                    <li>Customers (CRUD)</li>
+                    <li>Products</li>
+                    <li>Customers</li>
                     <li>Orders</li>
                 </ul>
             </nav>
@@ -27,10 +27,10 @@
             <header class="view-header">
                 <h1>Clothing Collection</h1>
                 <div class="categories">
-                    <button>All</button>
-                    <button>Shirts</button>
-                    <button>Pants</button>
-                    <button>Accessories</button>
+                    <button class="category-btn active" onclick="displayProducts('All')">All</button>
+                    <button class="category-btn" onclick="displayProducts('Shirts')">Shirts</button>
+                    <button class="category-btn" onclick="displayProducts('Pants')">Pants</button>
+                    <button class="category-btn" onclick="displayProducts('Accessories')">Accessories</button>
                 </div>
             </header>
             <section class="product-grid" id="productGrid">
@@ -50,5 +50,6 @@
             </div>
         </aside>
     </div>
+    <script src="app.js"></script>
 </body>
 </html>
