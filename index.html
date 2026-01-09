@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thread Theory | POS System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <span class="logo-icon">/T/</span>
+                <h2>Thread Theory</h2>
+            </div>
+            <nav>
+                <ul>
+                    <li class="active">Store</li>
+                    <li>Products (CRUD)</li>
+                    <li>Customers (CRUD)</li>
+                    <li>Orders</li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="product-view">
+            <header class="view-header">
+                <h1>Clothing Collection</h1>
+                <div class="categories">
+                    <button>All</button>
+                    <button>Shirts</button>
+                    <button>Pants</button>
+                    <button>Accessories</button>
+                </div>
+            </header>
+            <section class="product-grid" id="productGrid">
+                </section>
+        </main>
+
+        <aside class="cart-panel">
+            <h3>Current Order</h3>
+            <div class="cart-items" id="cartItems">
+                </div>
+            <div class="cart-summary">
+                <p>Subtotal: <span id="subtotal">$0.00</span></p>
+                <p>Discount: <input type="number" id="discountInput" placeholder="0%"> </p>
+                <hr>
+                <h4>Total: <span id="finalTotal">$0.00</span></h4>
+                <button class="btn-checkout">Place Order</button>
+            </div>
+        </aside>
+    </div>
+</body>
+</html>
